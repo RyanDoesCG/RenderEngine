@@ -104,7 +104,7 @@
 
     function UpdateScene()
     {
-       // scene.directionalLight.move([ 0.5, Math.cos(frameID * 0.01), 0.0 ])
+
     }
     
     // CAMERA
@@ -153,7 +153,6 @@
     var then = 0
     var FramerateTickInterval = 10;
     var DisplayedFrameTime = 0.0;
-    var hideUI = false;
     var frameID = 1;
 
     function Loop () 
@@ -204,8 +203,6 @@
 
     var SpacePressed = false;
 
-    var LightOn = false;
-
     function PollInput() 
     {      
         var speed = 0.0125
@@ -233,7 +230,70 @@
         if (RightArrowPressed) CameraAngularVelocity[1] += lookSpeed;
         if (UpArrowPressed)    CameraAngularVelocity[0] -= lookSpeed;
         if (DownArrowPressed)  CameraAngularVelocity[0] += lookSpeed;
+
         
+    }
+
+    var UIHidden = false;
+
+    function ToggleUI()
+    {
+        if (UIHidden)
+            ShowUI()
+        else
+            HideUI()
+
+        UIHidden = !UIHidden
+    }
+
+    function HideUI()
+    {
+        document.getElementById("ui").style.opacity = "0.0"      
+    }
+
+    function ShowUI()
+    {
+        document.getElementById("ui").style.opacity = "1.0"
+    }
+
+    var EditorHidden = false
+
+    function ToggleEditor()
+    {
+        if (EditorHidden)
+            ShowEditor()
+        else
+            HideEditor()
+
+        EditorHidden = !EditorHidden
+    }
+
+    function HideEditor()
+    {
+        var editorPanes = document.getElementsByClassName("editor")
+        for (var i = 0; i < editorPanes.length; ++i)
+        {
+            editorPanes[i].style.opacity = 0.0;
+        }
+
+        canvas.style.position = "fixed"
+        canvas.style.left = "0"
+        canvas.style.width = "100%"
+        canvas.style.height = "100%"
+    }
+
+    function ShowEditor()
+    {
+        var editorPanes = document.getElementsByClassName("editor")
+        for (var i = 0; i < editorPanes.length; ++i)
+        {
+            editorPanes[i].style.opacity = 1.0;
+        }
+
+        canvas.style.position = "relative"
+        canvas.style.left = "0"
+        canvas.style.width = "69.5%"
+        canvas.style.height = "74.5%"
     }
 
     function DoMovement() 
@@ -288,6 +348,7 @@
             else if (event.key == 'd') DPressed = !DPressed
             else if (event.key == 's') SPressed = !SPressed
             else if (event.key == 'w') WPressed = !WPressed
+            else if (event.key == 'f') FPressed = !FPressed
             else if (event.key == 'ArrowLeft')  LeftArrowPressed  = !LeftArrowPressed
             else if (event.key == 'ArrowRight') RightArrowPressed = !RightArrowPressed
             else if (event.key == 'ArrowUp')    UpArrowPressed    = !UpArrowPressed
@@ -304,25 +365,23 @@
     {
         if (event.key == 'u')
         {
-            hideUI = !hideUI;
+            ToggleUI()
+        }
+
+        if (event.key == 'f')
+        {
+            ToggleEditor()
         }
 
         if (event.key == 'r')
         {
            CameraPosition = vec4(0.0, 0.0, 0.0, 0.0);
            CameraRotation = new Float32Array([0.0,0.0,0.0]);
-           LightOn = false;
         }
-
 
         if (event.key == ' ')
         {
             SpacePressed = true;
-        }
-
-        if (event.key == 'f')
-        {
-            LightOn = !LightOn
         }
     }
 
