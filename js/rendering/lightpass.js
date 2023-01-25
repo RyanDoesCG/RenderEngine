@@ -84,6 +84,29 @@ class LightPass extends RenderPass
 
             void main ()
             {
+                vec4 Albedo = texture(AlbedoTexture, frag_uvs);
+                vec4 Normal = vec4(-1.0) + texture(NormalTexture, frag_uvs) * 2.0;
+                vec4 Position = texture(PositionTexture, frag_uvs);
+
+                vec4 ShadingResult = vec4(0.0);
+
+                vec3 n = Normal.xyz;
+                vec3 l = normalize(LightPosition.xyz - Position.xyz);
+                float ambient = 0.1;
+                float diffuse = max(0.0, dot(n, l));
+
+                ShadingResult += Albedo * diffuse + ambient;
+
+                float ao = texture(AOTexture, frag_uvs).r;
+
+                ShadingResult *= ao;
+
+                out_colour = ShadingResult;
+                out_position = texture(PositionTexture, frag_uvs);
+            }
+
+            /*
+            {
                 // DEBUG
                 out_colour = texture(NormalTexture, frag_uvs);
                 out_position = texture(PositionTexture, frag_uvs);
@@ -140,7 +163,9 @@ class LightPass extends RenderPass
                 }
 
                 out_position = Position;
-            }`
+            }
+            */
+            `
 
         super(context, width, height, VertexSource, FragmentSource)
     }
