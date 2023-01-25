@@ -38,11 +38,13 @@
 
     var transformGizmo
 
+    /*
     const response = await fetch('models/dragon.obj');
     const text = await response.text();
     var MeshGeom = MeshGeometry(text)
+     */
 
-    function BuildScene()
+    async function BuildScene()
     {
         scene.add(new SceneObject(
             "Ground",
@@ -88,7 +90,7 @@
 
         scene.add(new SceneObject(
             "Dragon",
-            new Primitive(gl, MeshGeom),
+            new Primitive(gl, await MeshGeometry('models/dragon.obj')),
             new Transform([1.0, 1.0, 1.0], [6.0, 0.9, 1.0], [0.0, 0.2, 0.0]),
             DefaultMaterial,
             false))

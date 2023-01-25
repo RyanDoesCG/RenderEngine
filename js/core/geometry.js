@@ -905,9 +905,12 @@ let ArrowGeometry = (function () {
     )
 }())
 
-function MeshGeometry(file)
+async function MeshGeometry(file)
 {
-    const lines = file.split('\n')
+    const response = await fetch(file);
+    const text = await response.text();
+
+    const lines = text.split('\n')
 
     var uniquePositions = []
     var uniqueNormals = []
