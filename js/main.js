@@ -84,7 +84,7 @@
         scene.add(new SceneObject(
             "Sphere",
             new Primitive(gl, SphereGeometry),
-            new Transform([1.0, 1.0, 1.0], [-5.0, 2.0, 1.0], [0.0, 0.0, 0.0]),
+            new Transform([2.0, 2.0, 2.0], [-6.0, 3.0, 1.0], [0.0, 0.0, 0.0]),
             DefaultMaterial,
             false))
 
@@ -101,6 +101,11 @@
             new Transform([100.0, 100.0, 100.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]),
             DefaultMaterial,
             false))
+
+        scene.addLight(new DirectionalLight(
+            "DirectionaLight",
+            new Transform([1.0, 1.0, 1.0], [2.0, 6.0, 6.0], [0.8, 0.2, 0.0]),
+            100.0))
     
         transformGizmo = new SceneObject(
             "transformGizmo", 

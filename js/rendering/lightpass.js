@@ -83,6 +83,11 @@ class LightPass extends RenderPass
 
             void main ()
             {
+                /*
+                out_colour = texture(ShadowTexture, frag_uvs);
+                out_position = texture(PositionTexture, frag_uvs);
+                return;
+                */
                 vec4 Albedo = texture(AlbedoTexture, frag_uvs);
                 vec4 Normal = vec4(-1.0) + texture(NormalTexture, frag_uvs) * 2.0;
                 vec4 Position = texture(PositionTexture, frag_uvs);
@@ -91,13 +96,15 @@ class LightPass extends RenderPass
 
                 vec3 n = Normal.xyz;
                 vec3 l = normalize(DirectionalLightPosition.xyz - Position.xyz);
+
                 float ambient = 0.1;
                 float diffuse = max(0.0, dot(n, l));
-
                 ShadingResult += Albedo * diffuse + ambient;
 
-                float ao = texture(AOTexture, frag_uvs).r;
+                float shadow = ShadowmapLookup(Position, Normal, ShadowSoftness);
+                ShadingResult *= shadow;
 
+                float ao = texture(AOTexture, frag_uvs).r;
                 ShadingResult *= ao;
 
                 out_colour = ShadingResult;
@@ -155,9 +162,12 @@ class LightPass extends RenderPass
         this.gl.activeTexture(this.gl.TEXTURE6);
         this.gl.bindTexture(this.gl.TEXTURE_2D, inVolumetrics);
 
-        this.gl.uniform3fv(this.uniforms.get("DirectionalLightPosition").location, [2.0, 6.0, 20.0])
-      //  this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightProjection").location, false, scene.directionalLight.projection)
-      //  this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightView").location, false, scene.directionalLight.view)
+        if (scene.directionalLight)
+        {
+            this.gl.uniform3fv(this.uniforms.get("DirectionalLightPosition").location, scene.directionalLight.translation)
+            this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightProjection").location, false, scene.directionalLight.projection)
+            this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightView").location, false, scene.directionalLight.view)
+        }
 
         this.gl.uniform4fv(this.uniforms.get("CameraPosition").location, view.CameraPosition)
 

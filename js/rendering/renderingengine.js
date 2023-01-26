@@ -11,7 +11,7 @@ class RenderingEngine
         this.EditorRenderPass       = new EditorPass       (this.gl, this.width, this.height)
         this.OutlineRenderPass      = new OutlinePass      (this.gl, this.width, this.height)
         this.SSAORenderPass         = new SSAOPass         (this.gl, this.width, this.height)
-        this.ShadowRenderPass       = new ShadowPass       (this.gl, this.width, this.height)
+        this.ShadowRenderPass       = new ShadowPass       (this.gl, 1080, 1080)
         this.VolumetricRenderPass   = new VolumetricsPass  (this.gl, this.width, this.height)
         this.LightRenderPass        = new LightPass        (this.gl, this.width, this.height)
    //     this.TransparencyRenderPass = new TransparencyPass (this.gl, this.width, this.height)

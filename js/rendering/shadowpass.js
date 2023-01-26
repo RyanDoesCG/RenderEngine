@@ -47,8 +47,11 @@ class ShadowPass extends RenderPass
         this.gl.enable(this.gl.CULL_FACE)
         this.gl.cullFace(this.gl.FRONT)
 
-      //  this.gl.uniformMatrix4fv(this.uniforms.get("Projection").location, false, scene.directionalLight.projection)
-      //  this.gl.uniformMatrix4fv(this.uniforms.get("View").location, false, scene.directionalLight.view)
+        if (scene.directionalLight)
+        {
+            this.gl.uniformMatrix4fv(this.uniforms.get("Projection").location, false, scene.directionalLight.projection)
+            this.gl.uniformMatrix4fv(this.uniforms.get("View").location, false, scene.directionalLight.view)
+        }
 
         for (var i = 0; i < scene.objects.length; ++i)
         {

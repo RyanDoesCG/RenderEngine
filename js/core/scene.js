@@ -45,6 +45,7 @@ class Scene
 {
     constructor ()
     {
+        this.directionalLight = null
         this.objects = []
         this.root = new SceneObject(
             "root", 
@@ -64,5 +65,10 @@ class Scene
         {
             this.objects.push(object.children[i])
         }
+    }
+
+    addLight (light)
+    {
+        this.directionalLight = light
     }
 }
