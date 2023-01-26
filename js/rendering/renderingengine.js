@@ -64,12 +64,12 @@ class RenderingEngine
         // Textures
         this.WhiteNoiseTexture = loadTexture(this.gl, 'images/noise/halton-noise.png')
         this.STBNBlueNoiseTextures = []
-        this.NBlueNoise = 6;
+        this.NBlueNoise = 64;
         for (var i = 0; i < this.NBlueNoise; ++i)
         {
             this.STBNBlueNoiseTextures.push(loadTexture(this.gl, 'images/noise/STBN/stbn_scalar_2Dx1Dx1D_128x128x64x1_' + i + '.png'))
         }
-    
+
         this.volumeSize = 512
         this.VolumeTextureData = new Uint8Array(this.volumeSize * this.volumeSize * this.volumeSize);
         for (var z = 0; z < this.volumeSize; ++z) 
@@ -139,6 +139,7 @@ class RenderingEngine
             this.SSAORenderPass.Clear();
         }
 
+        
         if (this.VolumetricRenderPass.active())
         {
             this.VolumetricRenderPass.Render(
@@ -155,7 +156,9 @@ class RenderingEngine
         {
             this.VolumetricRenderPass.Clear();
         }
+        
 
+        
         this.EditorRenderPass.Render(
             scene,
             view,
@@ -167,6 +170,7 @@ class RenderingEngine
             this.BaseRenderPass.framebuffer,
             false
         )
+        
 
         this.BlurRenderPass.Render(
             this.ScreenPrimitive,
@@ -207,7 +211,7 @@ class RenderingEngine
             this.FogRenderPass.active()||
             this.TonemappingRenderPass.active() ||
             this.BloomRenderPass.active()?false:true)
-            */
+        */
 
         if (this.OutlineRenderPass.active())
         {
@@ -235,6 +239,7 @@ class RenderingEngine
             LastBuffer = this.TAARenderPass.outputColour
         }
     
+        
         if (this.FogRenderPass.active())
         {
             this.FogRenderPass.Render(
@@ -251,6 +256,7 @@ class RenderingEngine
                 this.BloomRenderPass.active()?false:true)
             LastBuffer = this.FogRenderPass.output
         }
+        
 
         if (this.DepthOfFieldRenderPass.active())
         {

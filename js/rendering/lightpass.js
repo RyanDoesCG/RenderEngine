@@ -31,9 +31,9 @@ class LightPass extends RenderPass
             uniform sampler2D VolumetricsTexture;
             uniform float     Time;
 
-            uniform vec3 LightPosition;
-            uniform mat4 LightProjection;
-            uniform mat4 LightView;
+            uniform vec3 DirectionalLightPosition;
+            uniform mat4 DirectionalLightProjection;
+            uniform mat4 DirectionalLightView;
             uniform vec4 CameraPosition;
             uniform float ShadowBias; // #expose min=-0.1 max=0.1 step=0.0001 default=-0.01
             uniform float ShadowSoftness; // #expose min=0.0 max=0.25 step=0.0001 defaults=0.0025
@@ -50,9 +50,8 @@ class LightPass extends RenderPass
             float seed = 0.0;
             float random ()
             {
-                seed += 0.01;
-                return texture(BlueNoise, frag_uvs.xy * 4.0 + vec2(0.0, seed)).r;
-
+               // return texture(BlueNoise, vec3(frag_uvs.xy, 0.0)).x;
+                return texture(BlueNoise, (frag_uvs.xy + vec2(seed, seed)) * 4.0).x;
             }
 
             float ShadowmapLookup (vec4 position, vec4 normal, float blur)
@@ -61,7 +60,7 @@ class LightPass extends RenderPass
                 float s = 0.0;
                 for (int i = 0; i < int(NSamples); ++i)
                 {
-                    vec4 fragPosLightSpace = LightProjection * LightView * (vec4(position.xyz, 1.0));
+                    vec4 fragPosLightSpace = DirectionalLightProjection * DirectionalLightView * (vec4(position.xyz, 1.0));
                     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
                     projCoords = projCoords * 0.5 + 0.5;
 
@@ -91,7 +90,7 @@ class LightPass extends RenderPass
                 vec4 ShadingResult = vec4(0.0);
 
                 vec3 n = Normal.xyz;
-                vec3 l = normalize(LightPosition.xyz - Position.xyz);
+                vec3 l = normalize(DirectionalLightPosition.xyz - Position.xyz);
                 float ambient = 0.1;
                 float diffuse = max(0.0, dot(n, l));
 
@@ -103,7 +102,75 @@ class LightPass extends RenderPass
 
                 out_colour = ShadingResult;
                 out_position = texture(PositionTexture, frag_uvs);
-            }
+            }`
+
+        super(context, width, height, VertexSource, FragmentSource)
+    }
+
+    Render (ScreenPrimitive, scene, view, framebuffer, inAlbedoTexture, inNormalTexture, inPositionTexture, inBlueNoise, inAO, inShadows, inVolumetrics, time, fog, toScreen)
+    {
+        if (toScreen)
+        {
+            this.gl.viewport(0, 0, this.width, this.height);
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        }
+        else
+        {
+            this.gl.viewport(0, 0, this.width, this.height);
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, framebuffer);
+            this.gl.drawBuffers([
+                this.gl.COLOR_ATTACHMENT0, 
+                this.gl.COLOR_ATTACHMENT1 ]);
+        }
+
+        this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.gl.useProgram(this.ShaderProgram);
+
+        this.gl.uniform1i(this.uniforms.get("AlbedoTexture").location, 0);
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inAlbedoTexture);
+
+        this.gl.uniform1i(this.uniforms.get("NormalTexture").location, 1);
+        this.gl.activeTexture(this.gl.TEXTURE1);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inNormalTexture);
+
+        this.gl.uniform1i(this.uniforms.get("PositionTexture").location, 2);
+        this.gl.activeTexture(this.gl.TEXTURE2);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inPositionTexture);
+
+        this.gl.activeTexture(this.gl.TEXTURE3);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inBlueNoise);
+        this.gl.uniform1i(this.uniforms.get("BlueNoise").location, 3);
+
+        this.gl.uniform1i(this.uniforms.get("AOTexture").location, 4);
+        this.gl.activeTexture(this.gl.TEXTURE4);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inAO);
+
+        this.gl.uniform1i(this.uniforms.get("ShadowTexture").location, 5);
+        this.gl.activeTexture(this.gl.TEXTURE5);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inShadows);
+
+        this.gl.uniform1i(this.uniforms.get("VolumetricsTexture").location, 6);
+        this.gl.activeTexture(this.gl.TEXTURE6);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inVolumetrics);
+
+        this.gl.uniform3fv(this.uniforms.get("DirectionalLightPosition").location, [2.0, 6.0, 20.0])
+      //  this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightProjection").location, false, scene.directionalLight.projection)
+      //  this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightView").location, false, scene.directionalLight.view)
+
+        this.gl.uniform4fv(this.uniforms.get("CameraPosition").location, view.CameraPosition)
+
+        this.gl.uniform1i(this.uniforms.get("Fog").location, fog? 1 : 0);
+
+        this.gl.uniform1f(this.uniforms.get("ShadowBias").location, this.uniforms.get("ShadowBias").value)
+        this.gl.uniform1f(this.uniforms.get("ShadowSoftness").location, this.uniforms.get("ShadowSoftness").value)
+
+
+        ScreenPrimitive.draw()
+    }
+}
+
 
             /*
             {
@@ -165,71 +232,3 @@ class LightPass extends RenderPass
                 out_position = Position;
             }
             */
-            `
-
-        super(context, width, height, VertexSource, FragmentSource)
-    }
-
-    Render (ScreenPrimitive, scene, view, framebuffer, inAlbedoTexture, inNormalTexture, inPositionTexture, inBlueNoise, inAO, inShadows, inVolumetrics, time, fog, toScreen)
-    {
-        if (toScreen)
-        {
-            this.gl.viewport(0, 0, this.width, this.height);
-            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-        }
-        else
-        {
-            this.gl.viewport(0, 0, this.width, this.height);
-            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, framebuffer);
-            this.gl.drawBuffers([
-                this.gl.COLOR_ATTACHMENT0, 
-                this.gl.COLOR_ATTACHMENT1 ]);
-        }
-
-        this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-        this.gl.useProgram(this.ShaderProgram);
-
-        this.gl.uniform1i(this.uniforms.get("AlbedoTexture").location, 0);
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inAlbedoTexture);
-
-        this.gl.uniform1i(this.uniforms.get("NormalTexture").location, 1);
-        this.gl.activeTexture(this.gl.TEXTURE1);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inNormalTexture);
-
-        this.gl.uniform1i(this.uniforms.get("PositionTexture").location, 2);
-        this.gl.activeTexture(this.gl.TEXTURE2);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inPositionTexture);
-
-        this.gl.uniform1i(this.uniforms.get("BlueNoise").location, 3);
-        this.gl.activeTexture(this.gl.TEXTURE3);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inBlueNoise);
-
-        this.gl.uniform1i(this.uniforms.get("AOTexture").location, 4);
-        this.gl.activeTexture(this.gl.TEXTURE4);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inAO);
-
-        this.gl.uniform1i(this.uniforms.get("ShadowTexture").location, 5);
-        this.gl.activeTexture(this.gl.TEXTURE5);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inShadows);
-
-        this.gl.uniform1i(this.uniforms.get("VolumetricsTexture").location, 6);
-        this.gl.activeTexture(this.gl.TEXTURE6);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, inVolumetrics);
-
-       // this.gl.uniform3fv(this.uniforms.get("LightPosition").location, [ scene.directionalLight.translation[0],scene.directionalLight.translation[1],scene.directionalLight.translation[2]])
-       // this.gl.uniformMatrix4fv(this.uniforms.get("LightProjection").location, false, scene.directionalLight.projection)
-       // this.gl.uniformMatrix4fv(this.uniforms.get("LightView").location, false, scene.directionalLight.view)
-//
-        this.gl.uniform4fv(this.uniforms.get("CameraPosition").location, view.CameraPosition)
-
-        this.gl.uniform1i(this.uniforms.get("Fog").location, fog? 1 : 0);
-
-        this.gl.uniform1f(this.uniforms.get("ShadowBias").location, this.uniforms.get("ShadowBias").value)
-        this.gl.uniform1f(this.uniforms.get("ShadowSoftness").location, this.uniforms.get("ShadowSoftness").value)
-
-
-        ScreenPrimitive.draw()
-    }
-}

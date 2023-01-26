@@ -24,9 +24,9 @@ class SSAOPass extends RenderPass
             uniform float near;
             uniform float far;
 
-            uniform float Radius;    // #expose min=0.001 max=0.1  step=0.001 default=0.01
+            uniform float Radius;    // #expose min=0.001 max=0.1  step=0.001 default=0.089
             uniform float Intensity; // #expose min=0.001 max=10.0 step=0.01  default=1.0
-            uniform float Cutoff;    // #expose min=0.0 max=10.0 step=0.1 default=1.0
+            uniform float Cutoff;    // #expose min=0.0 max=100.0 step=0.1 default=50.0
 
             in vec2 frag_uvs;
 
@@ -41,25 +41,22 @@ class SSAOPass extends RenderPass
             float seed = 0.0;
             float random ()
             {
-                seed += 0.1;
+                seed += 0.01;
                 return texture(BlueNoise, (frag_uvs.xy + vec2(0.0, seed)) * 4.0).x;
             }
 
             void main ()
             {
-                float thisDepth = LinearizeDepth(texture(Depth, frag_uvs).r);
-
-                float AO = 0.0;
-
                 float NSamples = 16.0;
-
+                float AO = 0.0;
+                float thisDepth = LinearizeDepth(texture(Depth, frag_uvs).r);
                 for (int i = 0; i < int(NSamples); ++ i)
                 {
                     vec2  offsetUVs   = frag_uvs + vec2(-1.0 + random() * 2.0, -1.0 + random() * 2.0) * Radius;            
                     float sampleDepth = LinearizeDepth(texture(Depth, offsetUVs).r);
                     if (sampleDepth < thisDepth)
                     {
-                        float depthDiff   = (thisDepth - sampleDepth);
+                        float depthDiff = abs(thisDepth - sampleDepth);
                         if (depthDiff < Cutoff)
                         {
                             AO += 1.0;  

@@ -117,7 +117,7 @@
     }
     
     // CAMERA
-    var CameraPosition = vec4(0.0, 6.0, 10.0, 1.0)
+    var CameraPosition = vec4(0.0, 9.0, 22.0, 1.0)
     var CameraVelocity = vec4(0.0, 0.0, 0.0, 0.0)
     var CameraAcceleration = vec4(0.0, 0.0, 0.0, 0.0)
 

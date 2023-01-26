@@ -43,7 +43,7 @@ class TAAPass extends RenderPass
 
             uniform vec2 WindowSize;
 
-            uniform float CopyAAFrame; // #expose min=0 max=1 step=1 default=1
+            uniform float CopyAAFrame; // #expose min=0 max=1 step=1 default=0
 
             in vec2 frag_uvs;
 

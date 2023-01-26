@@ -65,7 +65,7 @@ function createBitmapTexture(gl, pixels)
     return texture;
 }
 
-function createVolumeTexture(gl, data, Size)
+function createVolumeTexture(gl, data, size)
 {
     var texture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
@@ -83,9 +83,9 @@ function createVolumeTexture(gl, data, Size)
         gl.TEXTURE_3D, 
         0, 
         gl.R8,
-        Size[0], 
-        Size[1], 
-        Size[2],
+        size[0], 
+        size[1], 
+        size[2],
         0, 
         gl.RED, 
         gl.UNSIGNED_BYTE,
@@ -186,7 +186,8 @@ function loadTexture(gl, texturePath)
 
     const image = new Image();
     image.src = texturePath;
-    image.onload = function() {
+    image.onload = function() 
+    {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
         ImagesLoaded[index] = true;
@@ -196,6 +197,66 @@ function loadTexture(gl, texturePath)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+
+    return texture;
+}
+
+function loadBlueNoiseVolumeTexture(gl)
+{
+    // allocate texture and upload blank data to GPU
+    size = [ 128, 128, 64 ]
+    data = new Uint8Array(size[0] * size[1] * size[2])
+    for (var z = 0; z < size[2]; ++z) 
+    {
+        for (var y = 0; y < size[1]; ++y) 
+        {
+            for (var x = 0; x < size[0]; ++x) 
+            {
+                data[x + y * size[1] + z * size[2] * size[0]] = noise(
+                    (x), 
+                    (y), 
+                    (z)) * 255;
+            }
+        }
+    }
+
+    texture = createVolumeTexture(gl, data, size)
+
+    // walk through folder and request a load on all textures
+    slices = 64;
+    for (var i = 0; i < slices; ++i)
+    {
+        const image = new Image();
+        image.src = 'images/noise/STBN/stbn_scalar_2Dx1Dx1D_128x128x64x1_' + i + '.png'
+        image.onload = function()
+        {
+            const slice = i;
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_3D, texture);
+        
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, 0);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        
+            gl.texSubImage3D(gl.TEXTURE_3D, 
+                0, 
+                0, 
+                0, 
+                0, 
+                image.width, 
+                image.height, 
+                1, 
+                gl.R, 
+                gl.UNSIGNED_BYTE, 
+                image);
+
+            gl.generateMipmap(gl.TEXTURE_3D);
+        }
+    }
 
     return texture;
 }
