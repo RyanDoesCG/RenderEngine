@@ -56,38 +56,38 @@ class LightPass extends RenderPass
 
             float ShadowmapLookup (vec4 position, vec4 normal, float blur)
             {
-                float NSamples = 2.0;
-                float s = 0.0;
-                for (int i = 0; i < int(NSamples); ++i)
-                {
-                    vec4 fragPosLightSpace = DirectionalLightProjection * DirectionalLightView * (vec4(position.xyz, 1.0));
-                    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-                    projCoords = projCoords * 0.5 + 0.5;
+                vec4 fragPosLightSpace = DirectionalLightProjection * DirectionalLightView * (vec4(position.xyz, 1.0));
+                vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+                projCoords = projCoords * 0.5 + 0.5;
 
-                    float x = -1.0 + random() * 2.0;
-                    float y = -1.0 + random() * 2.0;
-                    vec2 offset = vec2(x, y) * blur;
+                vec2 shadowUV = projCoords.xy;
 
-                    vec2 shadowUV = projCoords.xy + offset;
+                float xOffset = ShadowSoftness;
+                float yOffset = ShadowSoftness;
+                float Factor = 0.0;
 
-                    float closestDepth = texture(ShadowTexture, shadowUV).r; 
-                    float currentDepth = projCoords.z;
-
-                    float bias =  ShadowBias;
-                    float shadow = currentDepth - bias > closestDepth  ? 0.0 : 1.0;
-                    s += shadow;
+                for (int y = -1 ; y <= 1 ; y++) {
+                    for (int x = -1 ; x <= 1 ; x++) {
+                        vec2 Offsets = vec2(float(x) * xOffset, float(y) * yOffset);
+                        vec3 UVC = vec3(shadowUV + Offsets, projCoords.z + 0.0001);
+                        Factor += texture(ShadowTexture, UVC.xy).r;
+                    }
                 }
+            
+                return (0.5 + (Factor / 18.0));
 
-                return s / NSamples;
+                /*
+                float closestDepth = texture(ShadowTexture, shadowUV).r; 
+                float currentDepth = projCoords.z;
+
+                float bias =  ShadowBias;
+                float shadow = currentDepth - bias > closestDepth  ? 0.0 : 1.0;
+                return shadow;
+                */
             } 
 
             void main ()
             {
-                /*
-                out_colour = texture(ShadowTexture, frag_uvs);
-                out_position = texture(PositionTexture, frag_uvs);
-                return;
-                */
                 vec4 Albedo = texture(AlbedoTexture, frag_uvs);
                 vec4 Normal = vec4(-1.0) + texture(NormalTexture, frag_uvs) * 2.0;
                 vec4 Position = texture(PositionTexture, frag_uvs);
@@ -242,3 +242,31 @@ class LightPass extends RenderPass
                 out_position = Position;
             }
             */
+
+
+
+            /*
+                float NSamples = 4.0;
+                float s = 0.0;
+                for (int i = 0; i < int(NSamples); ++i)
+                {
+                    vec4 fragPosLightSpace = DirectionalLightProjection * DirectionalLightView * (vec4(position.xyz, 1.0));
+                    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+                    projCoords = projCoords * 0.5 + 0.5;
+
+                    float x = -1.0 + random() * 2.0;
+                    float y = -1.0 + random() * 2.0;
+                    vec2 offset = vec2(x, y) * blur;
+
+                    vec2 shadowUV = projCoords.xy + offset;
+
+                    float closestDepth = texture(ShadowTexture, shadowUV).r; 
+                    float currentDepth = projCoords.z;
+
+                    float bias =  ShadowBias;
+                    float shadow = currentDepth - bias > closestDepth  ? 0.0 : 1.0;
+                    s += shadow;
+                }
+
+                return s / NSamples;
+             */

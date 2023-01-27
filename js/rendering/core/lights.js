@@ -6,7 +6,7 @@ class DirectionalLight extends SceneObject
         this.rotation = transform.rotation
         this.intensity = intensity
 
-        this.projection = orthographic(60.0, 0.01, 100.0)
+        this.projection = orthographic(60.0, 0.1, 32.0)
         this.view       = identity()
         this.view       = multiplym(rotate(transform.rotation[0], transform.rotation[1], transform.rotation[2]), this.view)
         this.view      = multiplym(translate(-transform.translation[0], -transform.translation[1], -transform.translation[2]), this.view);
