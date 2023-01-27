@@ -164,7 +164,7 @@ class LightPass extends RenderPass
 
         if (scene.directionalLight)
         {
-            this.gl.uniform3fv(this.uniforms.get("DirectionalLightPosition").location, scene.directionalLight.translation)
+            this.gl.uniform3fv(this.uniforms.get("DirectionalLightPosition").location, scene.directionalLight.transform.translation)
             this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightProjection").location, false, scene.directionalLight.projection)
             this.gl.uniformMatrix4fv(this.uniforms.get("DirectionalLightView").location, false, scene.directionalLight.view)
         }

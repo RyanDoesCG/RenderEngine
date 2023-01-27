@@ -20,6 +20,7 @@
     gl.getExtension('EXT_color_buffer_float');
 
     const DefaultMaterial = new Material(gl, [ 0.5, 0.5, 0.5 ], 1.0)
+    const DarkGreyMaterial = new Material(gl, [ 0.1, 0.1, 0.1], 1.0)
     const GridMaterial = new Material(gl, [0.5, 0.5, 0.5], 1.0, 
         "bool boundary (float v) { return (v < 0.075 || v > 0.925); }"
         +
@@ -50,7 +51,7 @@
             "Ground",
             new Primitive(gl, BoxGeometry),
             new Transform([16.0, 1.0, 16.0], [0.0, 0.0, -2.0], [0.0, 0.0, 0.0]),
-            DefaultMaterial,
+            GridMaterial,
             false))
 
         scene.add(new SceneObject(
@@ -78,7 +79,7 @@
             "Arch1",
             new Primitive(gl, ArchGeometry),
             new Transform([1.0, 1.0, 1.0], [0.0, 2.0, -4.0], [0.0, 0.0, 0.0]),
-            DefaultMaterial,
+            DarkGreyMaterial,
             false))
         
         scene.add(new SceneObject(
@@ -104,7 +105,7 @@
 
         scene.addLight(new DirectionalLight(
             "DirectionaLight",
-            new Transform([1.0, 1.0, 1.0], [2.0, 6.0, 6.0], [0.8, 0.2, 0.0]),
+            new Transform([1.0, 1.0, 1.0], [0.0, 10.0, 10.0], [0.32, 0.0, 0.0]),
             100.0))
     
         transformGizmo = new SceneObject(
