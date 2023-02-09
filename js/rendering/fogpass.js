@@ -29,7 +29,7 @@ class FogPass extends RenderPass
             uniform sampler2D ShadowTexture;
             uniform float Time;
 
-            uniform float FogDistance; // #expose min=0.0 max=1000.0  step=1.0 default=200.0
+            uniform float FogDistance; // #expose min=0.0 max=1000.0  step=1.0 default=33.0
             uniform float FogFalloff;  // #expose min=0.01 max=20.0 step=0.001 default=1.0
             uniform float FogMax;      // #expose min=0.0 max=1.0  step=0.01 default=0.96
 

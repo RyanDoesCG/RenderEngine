@@ -20,8 +20,8 @@ class TonemappingPass extends RenderPass
  
             uniform sampler2D Scene;
 
-            uniform float Gamma; // #expose min=0.0 max=10.0 step=0.1 default=1.0
-            uniform float Gain;  // #expose min=0.0 max=10.0 step=0.1 default=1.0
+            uniform float Gamma; // #expose min=0.0 max=10.0 step=0.1 default=0.8
+            uniform float Gain;  // #expose min=0.0 max=10.0 step=0.1 default=2.2
 
             in vec2 frag_uvs;
             

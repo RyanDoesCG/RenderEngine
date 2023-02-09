@@ -24,9 +24,9 @@ class SSAOPass extends RenderPass
             uniform float near;
             uniform float far;
 
-            uniform float Radius;    // #expose min=0.001 max=0.1  step=0.001 default=0.089
-            uniform float Intensity; // #expose min=0.001 max=10.0 step=0.01  default=1.0
-            uniform float Cutoff;    // #expose min=0.0 max=100.0 step=0.1 default=50.0
+            uniform float Radius;    // #expose min=0.001 max=0.1  step=0.001 default=0.083
+            uniform float Intensity; // #expose min=0.001 max=10.0 step=0.01  default=0.831
+            uniform float Cutoff;    // #expose min=0.0 max=100.0 step=0.1 default=100.0
 
             in vec2 frag_uvs;
 
@@ -38,11 +38,15 @@ class SSAOPass extends RenderPass
                 return (2.0 * near * far) / (far + near - z * (far - near));
             }
 
-            float seed = 0.0;
+            float seedx = 0.0;
+            float seedy = 0.0;
+            float factor = 1.0;
             float random ()
             {
-                seed += 0.01;
-                return texture(BlueNoise, (frag_uvs.xy + vec2(0.0, seed)) * 4.0).x;
+                seedx += 0.011242 * factor;
+                seedy += 0.009425 * factor;
+                factor *= -1.0;
+                return texture(BlueNoise, (frag_uvs.xy + vec2(seedx, seedy)) * 4.0).x;
             }
 
             void main ()
@@ -52,7 +56,11 @@ class SSAOPass extends RenderPass
                 float thisDepth = LinearizeDepth(texture(Depth, frag_uvs).r);
                 for (int i = 0; i < int(NSamples); ++ i)
                 {
-                    vec2  offsetUVs   = frag_uvs + vec2(-1.0 + random() * 2.0, -1.0 + random() * 2.0) * Radius;            
+
+                    vec2  offsetUVs = frag_uvs + vec2(
+                        -1.0 + random() * 2.0,
+                        -1.0 + random() * 2.0) * Radius;
+
                     float sampleDepth = LinearizeDepth(texture(Depth, offsetUVs).r);
                     if (sampleDepth < thisDepth)
                     {
@@ -63,6 +71,7 @@ class SSAOPass extends RenderPass
                         } 
                     }
                 }
+                
                 AO /= NSamples;
 
                 out_colour = vec4(1.0 - vec3(AO * Intensity), 1.0);

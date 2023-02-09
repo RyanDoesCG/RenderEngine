@@ -10,9 +10,8 @@
         depth:true,
         stencil:false,
         desynchronized:false,
-        antialias:false,
+        antialias:true,
         powerPreference:"low-power"
-
     })
 
     //gl.globalCompositeOperation = "difference";
@@ -21,6 +20,9 @@
 
     const DefaultMaterial = new Material(gl, [ 0.5, 0.5, 0.5 ], 1.0)
     const DarkGreyMaterial = new Material(gl, [ 0.1, 0.1, 0.1], 1.0)
+    const BlackMaterial = new Material(gl, [0.0, 0.0, 0.0], 1.0)
+    const RedMaterial = new Material(gl, [1.0, 0.0, 0.0], 1.0)
+    const WhiteMaterial = new Material(gl, [1.0, 1.0, 1.0], 1.0)
     const GridMaterial = new Material(gl, [0.5, 0.5, 0.5], 1.0, 
         "bool boundary (float v) { return (v < 0.075 || v > 0.925); }"
         +
@@ -86,9 +88,30 @@
             "Sphere",
             new Primitive(gl, SphereGeometry),
             new Transform([2.0, 2.0, 2.0], [-6.0, 3.0, 1.0], [0.0, 0.0, 0.0]),
-            DefaultMaterial,
+            BlackMaterial,
+            false))
+/*
+        scene.add(new SceneObject(
+            "MiniSphere1",
+            new Primitive(gl, SphereGeometry),
+            new Transform([0.5, 0.5, 0.5], [-1.0, 1.5, 3.0], [0.0, 0.0, 0.0]),
+            RedMaterial,
             false))
 
+        scene.add(new SceneObject(
+            "MiniSphere2",
+            new Primitive(gl, SphereGeometry),
+            new Transform([0.4, 0.4, 0.4], [0.9, 1.4, 3.0], [0.0, 0.0, 0.0]),
+            WhiteMaterial,
+            false))
+
+        scene.add(new SceneObject(
+            "MiniSphere3",
+            new Primitive(gl, SphereGeometry),
+            new Transform([0.45, 0.45, 0.45], [0.0, 1.45, 3.0], [0.0, 0.0, 0.0]),
+            DarkGreyMaterial,
+            false))
+*/
         scene.add(new SceneObject(
             "Dragon",
             new Primitive(gl, await MeshGeometry('models/dragon.obj')),
