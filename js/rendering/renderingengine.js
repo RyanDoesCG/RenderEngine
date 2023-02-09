@@ -8,7 +8,6 @@ class RenderingEngine
 
         // Render Passes
         this.BaseRenderPass         = new DeferredBasePass (this.gl, this.width, this.height)
-        this.EditorRenderPass       = new EditorPass       (this.gl, this.width, this.height)
         this.OutlineRenderPass      = new OutlinePass      (this.gl, this.width, this.height)
         this.SSAORenderPass         = new SSAOPass         (this.gl, this.width, this.height)
         this.ShadowRenderPass       = new ShadowPass       (this.gl, 1080, 1080)
@@ -164,21 +163,6 @@ class RenderingEngine
         {
             this.VolumetricRenderPass.Clear();
         }
-        
-
-        
-        this.EditorRenderPass.Render(
-            scene,
-            view,
-            this.STBNBlueNoiseTextures[frameID % this.NBlueNoise],
-            frameID,
-            [this.width, this.height],
-            this.TAARenderPass.active()?true:false,
-            SelectedObject,
-            this.BaseRenderPass.framebuffer,
-            false
-        )
-        
 
         this.BlurRenderPass.Render(
             this.ScreenPrimitive,
