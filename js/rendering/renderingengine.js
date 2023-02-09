@@ -56,6 +56,12 @@ class RenderingEngine
             this.FrameBuffers[i] = createFramebuffer(this.gl, 
                 [this.gl.COLOR_ATTACHMENT0, this.gl.COLOR_ATTACHMENT1, this.gl.DEPTH_ATTACHMENT], 
                 [this.LightingBuffers[i], this.WorldPositionBuffers[i], this.BaseRenderPass.depth])
+            
+        this.FrameBuffersNoDepth = new Array(this.NumHistorySamples)
+        for (var i = 0; i < this.NumHistorySamples; ++i)
+            this.FrameBuffersNoDepth[i] = createFramebuffer(this.gl, 
+                [this.gl.COLOR_ATTACHMENT0, this.gl.COLOR_ATTACHMENT1], 
+                [this.LightingBuffers[i], this.WorldPositionBuffers[i]])
     
         this.ViewTransforms = new Array(this.NumHistorySamples)
         for (var i = 0; i < this.NumHistorySamples; ++i)
@@ -102,6 +108,8 @@ class RenderingEngine
         this.WorldPositionBuffers.unshift(LastWorldBuffer)
         const LastFrameBuffer = this.FrameBuffers.pop();
         this.FrameBuffers.unshift(LastFrameBuffer)
+        const LastFrameBufferNoDepth = this.FrameBuffersNoDepth.pop();
+        this.FrameBuffersNoDepth.unshift(LastFrameBufferNoDepth)
     }
 
     render(view, scene, frameID, SelectedObject)
@@ -218,8 +226,9 @@ class RenderingEngine
             this.OutlineRenderPass.Render(
                 this.ScreenPrimitive,
                 this.BaseRenderPass.outputID,
+                this.BaseRenderPass.depth,
                 SelectedObject,
-                this.FrameBuffers[0],
+                this.FrameBuffersNoDepth[0],
                 false)
         }
 

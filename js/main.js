@@ -382,7 +382,6 @@
 
     canvas.addEventListener('click', function (e) 
     {
-        unparentObject(transformGizmo)
         if (HoverObject == selectedObject)
         {
             selectedObject = -1
@@ -390,7 +389,6 @@
         else
         {
             selectedObject = HoverObject
-            parentObject(scene.objects[selectedObject], transformGizmo)
         }
     })
 

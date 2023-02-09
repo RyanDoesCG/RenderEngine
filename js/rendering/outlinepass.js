@@ -18,6 +18,7 @@ class OutlinePass extends RenderPass
             `#version 300 es
              precision lowp float;
  
+             uniform sampler2D Depth;
              uniform sampler2D Scene;
              uniform sampler2D IDs;
              uniform float thickness; // #expose min=0.0 max=0.1 step=0.001 default=0.001
@@ -41,7 +42,7 @@ class OutlinePass extends RenderPass
                 offsets[6] = vec2( 1.0, -1.0);
                 offsets[7] = vec2(-1.0, -1.0);
 
-                float SampleDiff = 0.0;
+                float IDDepth = texture(Depth, frag_uvs).r;
                 float IDSample = texture(IDs, frag_uvs).r;
 
                 if (IDSample * 255.0 == float(selected))
@@ -49,8 +50,14 @@ class OutlinePass extends RenderPass
                     for (int i = 0; i < 8; ++i)
                     {
                         vec2 offset_uvs = frag_uvs + offsets[i] * thickness;
-                        bool isEdge = texture(IDs, offset_uvs).r != IDSample;
-                        bool isOffScreen = offset_uvs.x <= 0.0 || offset_uvs.x >= 1.0 || offset_uvs.y <= 0.0 || offset_uvs.y >= 1.0;
+
+                        bool isEdge = 
+                            (texture(IDs, offset_uvs).r != IDSample) &&
+                            (texture(Depth, offset_uvs).r > IDDepth);
+
+                        bool isOffScreen = 
+                            offset_uvs.x <= 0.0 || offset_uvs.x >= 1.0 || 
+                            offset_uvs.y <= 0.0 || offset_uvs.y >= 1.0;
 
                         if (isEdge || isOffScreen)
                         {
@@ -71,7 +78,7 @@ class OutlinePass extends RenderPass
       //  this.framebuffer = createFramebuffer(this.gl, [ this.gl.COLOR_ATTACHMENT0 ], [ this.output ])
     }
 
-    Render(ScreenPrimitive, inIDTexture, SelectedObject, framebuffer, toScreen)
+    Render(ScreenPrimitive, inIDTexture, inDepthTexture, SelectedObject, framebuffer, toScreen)
     {
         if (toScreen)
         {
@@ -91,6 +98,10 @@ class OutlinePass extends RenderPass
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
         this.gl.useProgram(this.ShaderProgram);
+
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, inDepthTexture);
+        this.gl.uniform1i(this.uniforms.get("Depth").location, 0); 
 
         this.gl.activeTexture(this.gl.TEXTURE1);
         this.gl.bindTexture(this.gl.TEXTURE_2D, inIDTexture);
