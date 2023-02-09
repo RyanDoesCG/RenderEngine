@@ -52,127 +52,35 @@
         scene.add(new SceneObject(
             "Ground",
             new Primitive(gl, BoxGeometry),
-            new Transform([256.0, 1.0, 256.0], [0.0, -1.0, 0.0], [0.0, 0.0, 0.0]),
+            new Transform(Scale(256.0, 1.0, 256.0), Translation(0.0, -1.0, 0.0), Rotation(0.0, 0.0, 0.0)),
             GridMaterial,
             false))
 
         scene.add(new SceneObject(
             "Dragon",
             new Primitive(gl, await MeshGeometry('models/dragon.obj')),
-            new Transform([1.0, 1.0, 1.0], [4.0, 0.0, 0.0], [0.0, 0.5, 0.0]),
+            new Transform(Scale(1.0, 1.0, 1.0), Translation(4.0, 0.0, 0.0), Rotation(0.0, 0.5, 0.0)),
             DarkGreyMaterial,
             false))
 
         scene.add(new SceneObject(
             "Angel",
             new Primitive(gl, await MeshGeometry('models/AngelWood.obj')),
-            new Transform([1.0, 1.0, 1.0], [0.0, 0.0, -4.0], [0.0, -0.5, 0.0]),
+            new Transform(Scale(1.0, 1.0, 1.0), Translation(0.0, 0.0, -4.0), Rotation(0.0, -0.5, 0.0)),
             DarkGreyMaterial,
             false))
 
         scene.add(new SceneObject(
             "Dragon",
             new Primitive(gl, await MeshGeometry('models/dragon.obj')),
-            new Transform([1.0, 1.0, 1.0], [-4.0, 0.0, 0.0], [0.0, 2.5, 0.0]),
+            new Transform(Scale(1.0, 1.0, 1.0), Translation(-4.0, 0.0, 0.0), Rotation(0.0, 2.5, 0.0)),
             DarkGreyMaterial,
             false))
 
         scene.addLight(new DirectionalLight(
             "DirectionaLight",
-            new Transform([1.0, 1.0, 1.0], [0.0, 10.0, 10.0], [0.32, 0.0, 0.0]),
+            new Transform(Scale(1.0, 1.0, 1.0), Translation(0.0, 10.0, 10.0), Rotation(0.32, 0.0, 0.0)),
             100.0))
-
-        /*
-        scene.add(new SceneObject(
-            "Ground",
-            new Primitive(gl, BoxGeometry),
-            new Transform([16.0, 1.0, 16.0], [0.0, 0.0, -2.0], [0.0, 0.0, 0.0]),
-            GridMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "Box1",
-            new Primitive(gl, BoxGeometry),
-            new Transform([1.0, 1.0, 1.0], [-1.31514, 2.0, 0.0], [0.0, 0.2342, 0.0]),
-            DefaultMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "Box2",
-            new Primitive(gl, BoxGeometry),
-            new Transform([1.0, 1.0, 1.0], [1.3524, 2.0, 0.0], [0.0, -0.3512, 0.0]),
-            DefaultMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "Box3",
-            new Primitive(gl, BoxGeometry),
-            new Transform([1.0, 1.0, 1.0], [0.0, 4.0, -0.1243], [0.0, -0.084134, 0.0]),
-            DefaultMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "Arch1",
-            new Primitive(gl, ArchGeometry),
-            new Transform([1.0, 1.0, 1.0], [0.0, 2.0, -4.0], [0.0, 0.0, 0.0]),
-            DarkGreyMaterial,
-            false))
-        
-        scene.add(new SceneObject(
-            "Sphere",
-            new Primitive(gl, SphereGeometry),
-            new Transform([2.0, 2.0, 2.0], [-6.0, 3.0, 1.0], [0.0, 0.0, 0.0]),
-            BlackMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "MiniSphere1",
-            new Primitive(gl, SphereGeometry),
-            new Transform([0.5, 0.5, 0.5], [-1.0, 1.5, 3.0], [0.0, 0.0, 0.0]),
-            RedMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "MiniSphere2",
-            new Primitive(gl, SphereGeometry),
-            new Transform([0.4, 0.4, 0.4], [0.9, 1.4, 3.0], [0.0, 0.0, 0.0]),
-            WhiteMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "MiniSphere3",
-            new Primitive(gl, SphereGeometry),
-            new Transform([0.45, 0.45, 0.45], [0.0, 1.45, 3.0], [0.0, 0.0, 0.0]),
-            DarkGreyMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "Dragon",
-            new Primitive(gl, await MeshGeometry('models/dragon.obj')),
-            new Transform([1.0, 1.0, 1.0], [6.0, 0.9, 1.0], [0.0, 0.2, 0.0]),
-            DefaultMaterial,
-            false))
-
-        scene.add(new SceneObject(
-            "SkyDome",
-            new Primitive(gl, SkySphereGeometry),
-            new Transform([100.0, 100.0, 100.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]),
-            DefaultMaterial,
-            false))
-
-        scene.addLight(new DirectionalLight(
-            "DirectionaLight",
-            new Transform([1.0, 1.0, 1.0], [0.0, 10.0, 10.0], [0.32, 0.0, 0.0]),
-            100.0))
-    
-        transformGizmo = new SceneObject(
-            "transformGizmo", 
-            null,
-            new Transform([1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]),
-            null)
-
-        scene.add(transformGizmo)
-        */
     }
 
     function UpdateScene()

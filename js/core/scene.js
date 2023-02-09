@@ -50,7 +50,7 @@ class Scene
         this.root = new SceneObject(
             "root", 
             null, 
-            new Transform([1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]),
+            new Transform(Scale(1.0, 1.0, 1.0), Translation(0.0, 0.0, 0.0), Rotation(0.0, 0.0, 0.0)),
             null,
             false);
     }

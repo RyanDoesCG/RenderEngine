@@ -17,3 +17,7 @@ class Transform
         this.invMatrix = multiplym(scale(-scaling[0], -scaling[1], -scaling[2]), this.invMatrix)
     }
 }
+
+function Scale       (x, y, z) { return [x, y, z] }
+function Translation (x, y, z) { return [x, y, z] }
+function Rotation    (x, y, z) { return [x, y, z] }
