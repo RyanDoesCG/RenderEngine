@@ -318,3 +318,13 @@ function halfPlaneTest(plane, p, s)
         plane[2] * p[2] + 
         plane[3]) > -0.6;
 }
+
+function deg2rad (deg)
+{
+   return deg * (180.0/Math.PI)
+}
+
+function rad2deg (rad)
+{
+    return rad * (Math.PI/180.0)
+}

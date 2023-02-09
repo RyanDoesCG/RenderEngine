@@ -1001,6 +1001,35 @@ async function MeshGeometry(file)
 
     }
 
+    // center and floor the mesh
+    
+    var centroid = [ 0.0, 0.0, 0.0 ]
+    var lowestY = 100000.0
+    for (var i = 0; i < positions.length; i += 3)
+    {
+        centroid[0] += positions[i + 0];
+        centroid[1] += positions[i + 1];
+        centroid[2] += positions[i + 2];
+
+        if (positions[i + 1] < lowestY)
+        {
+            centroid[1] = positions[i + 1]
+            lowestY = positions[i + 1]
+        }
+    
+    }
+
+    centroid[0] /= positions.length / 3.0;
+    centroid[1] /= positions.length / 3.0;
+    centroid[2] /= positions.length / 3.0;
+
+    for (var i = 0; i < positions.length; i += 3)
+    {
+        positions[i + 0] -= centroid[0];
+        positions[i + 1] -= lowestY;
+        positions[i + 2] -= centroid[2];
+    }
+
     return new Geometry(
         new Float32Array(positions), 
         new Float32Array(normals), 

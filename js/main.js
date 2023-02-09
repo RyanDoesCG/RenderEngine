@@ -52,6 +52,33 @@
         scene.add(new SceneObject(
             "Ground",
             new Primitive(gl, BoxGeometry),
+            new Transform([256.0, 1.0, 256.0], [0.0, -1.0, 0.0], [0.0, 0.0, 0.0]),
+            GridMaterial,
+            false))
+
+        scene.add(new SceneObject(
+            "Dragon",
+            new Primitive(gl, await MeshGeometry('models/dragon.obj')),
+            new Transform([1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.2, 0.0]),
+            DefaultMaterial,
+            false))
+/*
+        scene.add(new SceneObject(
+            "Dragon",
+            new Primitive(gl, await MeshGeometry('models/AngelWood.obj')),
+            new Transform([1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]),
+            DefaultMaterial,
+            false))
+*/
+        scene.addLight(new DirectionalLight(
+            "DirectionaLight",
+            new Transform([1.0, 1.0, 1.0], [0.0, 10.0, 10.0], [0.32, 0.0, 0.0]),
+            100.0))
+
+        /*
+        scene.add(new SceneObject(
+            "Ground",
+            new Primitive(gl, BoxGeometry),
             new Transform([16.0, 1.0, 16.0], [0.0, 0.0, -2.0], [0.0, 0.0, 0.0]),
             GridMaterial,
             false))
@@ -90,7 +117,7 @@
             new Transform([2.0, 2.0, 2.0], [-6.0, 3.0, 1.0], [0.0, 0.0, 0.0]),
             BlackMaterial,
             false))
-/*
+
         scene.add(new SceneObject(
             "MiniSphere1",
             new Primitive(gl, SphereGeometry),
@@ -111,7 +138,7 @@
             new Transform([0.45, 0.45, 0.45], [0.0, 1.45, 3.0], [0.0, 0.0, 0.0]),
             DarkGreyMaterial,
             false))
-*/
+
         scene.add(new SceneObject(
             "Dragon",
             new Primitive(gl, await MeshGeometry('models/dragon.obj')),
@@ -138,6 +165,7 @@
             null)
 
         scene.add(transformGizmo)
+        */
     }
 
     function UpdateScene()

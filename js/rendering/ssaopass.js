@@ -51,7 +51,7 @@ class SSAOPass extends RenderPass
 
             void main ()
             {
-                float NSamples = 16.0;
+                float NSamples = 32.0;
                 float AO = 0.0;
                 float thisDepth = LinearizeDepth(texture(Depth, frag_uvs).r);
                 for (int i = 0; i < int(NSamples); ++ i)
