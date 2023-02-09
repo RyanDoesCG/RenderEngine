@@ -64,7 +64,7 @@
             false))
 
         scene.add(new SceneObject(
-            "Dragon",
+            "Angel",
             new Primitive(gl, await MeshGeometry('models/AngelWood.obj')),
             new Transform([1.0, 1.0, 1.0], [0.0, 0.0, -4.0], [0.0, -0.5, 0.0]),
             DarkGreyMaterial,
@@ -72,8 +72,8 @@
 
         scene.add(new SceneObject(
             "Dragon",
-            new Primitive(gl, await MeshGeometry('models/statue.obj')),
-            new Transform([0.05, 0.05, 0.05], [-4.0, 0.0, 0.0], [0.0, -1.0, 0.0]),
+            new Primitive(gl, await MeshGeometry('models/dragon.obj')),
+            new Transform([1.0, 1.0, 1.0], [-4.0, 0.0, 0.0], [0.0, 2.5, 0.0]),
             DarkGreyMaterial,
             false))
 
