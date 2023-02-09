@@ -45,7 +45,7 @@ class SSAOPass extends RenderPass
             {
                 seedx += 0.011242 * factor;
                 seedy += 0.009425 * factor;
-                factor *= -1.0;
+                //factor *= -1.0;
                 return texture(BlueNoise, (frag_uvs.xy + vec2(seedx, seedy)) * 4.0).x;
             }
 
@@ -71,7 +71,7 @@ class SSAOPass extends RenderPass
                         } 
                     }
                 }
-                
+
                 AO /= NSamples;
 
                 out_colour = vec4(1.0 - vec3(AO * Intensity), 1.0);
