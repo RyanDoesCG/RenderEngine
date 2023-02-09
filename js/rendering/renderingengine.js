@@ -37,27 +37,27 @@ class RenderingEngine
 
         // Frame History
         this.NumHistorySamples = 15;
-        this.LightingBuffers = [this.NumHistorySamples]
+        this.LightingBuffers = new Array(this.NumHistorySamples)
         for (var i = 0; i < this.NumHistorySamples; ++i)
             this.LightingBuffers[i] = createColourTexture(this.gl, 
                 this.width, 
                 this.height, 
                 this.gl.RGBA, this.gl.UNSIGNED_BYTE)
-                
-        this.WorldPositionBuffers = [this.NumHistorySamples]
+
+        this.WorldPositionBuffers = new Array(this.NumHistorySamples)
         for (var i = 0; i < this.NumHistorySamples; ++i)
-        this.WorldPositionBuffers[i] = createColourTexture(this.gl, 
-            this.width, 
-            this.height, 
-            this.gl.RGBA32F, this.gl.FLOAT)
+            this.WorldPositionBuffers[i] = createColourTexture(this.gl, 
+                this.width, 
+                this.height, 
+                this.gl.RGBA32F, this.gl.FLOAT)
     
-        this.FrameBuffers = [this.NumHistorySamples]
+        this.FrameBuffers = new Array(this.NumHistorySamples)
         for (var i = 0; i < this.NumHistorySamples; ++i)
-        this.FrameBuffers[i] = createFramebuffer(this.gl, 
-            [this.gl.COLOR_ATTACHMENT0, this.gl.COLOR_ATTACHMENT1, this.gl.DEPTH_ATTACHMENT], 
-            [this.LightingBuffers[i], this.WorldPositionBuffers[i], this.BaseRenderPass.depth])
+            this.FrameBuffers[i] = createFramebuffer(this.gl, 
+                [this.gl.COLOR_ATTACHMENT0, this.gl.COLOR_ATTACHMENT1, this.gl.DEPTH_ATTACHMENT], 
+                [this.LightingBuffers[i], this.WorldPositionBuffers[i], this.BaseRenderPass.depth])
     
-        this.ViewTransforms = [this.NumHistorySamples]
+        this.ViewTransforms = new Array(this.NumHistorySamples)
         for (var i = 0; i < this.NumHistorySamples; ++i)
             this.ViewTransforms[i] = identity()
 
