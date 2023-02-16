@@ -52,6 +52,7 @@ class TAAPass extends RenderPass
 
             bool shouldRejectSample (vec2 uv)
             {
+                return false;
             bool inRange = uv.x < 1.0 && uv.x > 0.0 && uv.y < 1.0 && uv.y > 0.0;
             bool farFromCurrentPixelSS = length(uv - frag_uvs) > 0.1;
             return !inRange || farFromCurrentPixelSS;

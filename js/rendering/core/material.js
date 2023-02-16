@@ -31,6 +31,7 @@ const BaseFragmentSourceHead =
     uniform vec4      Material;
     uniform float     Time;
     uniform int       ID;
+    uniform int       LightingOnly;
     in vec4 frag_worldpos;
     in vec3 frag_normal;
     in vec2 frag_uvs;
@@ -43,7 +44,7 @@ const BaseFragmentSourceMaterial = `
 const BaseFragmentSourceFoot =
    `void main ()
     {
-        out_albedo = getMaterialAlbedo();
+        out_albedo = (LightingOnly == 1) ? vec4(0.5, 0.5, 0.5, 1.0) : getMaterialAlbedo();
         out_normal = vec4((frag_normal + vec3(1.0)) * 0.5, 1.0);
         out_position = vec4(frag_worldpos.xyz, distance(CameraPosition.xyz, frag_worldpos.xyz));
         out_id = vec4(float(ID) / 255.0, 0.0, 0.0, 1.0);

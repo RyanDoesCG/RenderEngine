@@ -29,7 +29,7 @@ class DeferredBasePass extends BasePass
         this.idFramebuffer = createFramebuffer(this.gl, [ this.gl.COLOR_ATTACHMENT0 ], [ this.outputID ])
     }
 
-    Render(scene, View, toScreen)
+    Render(scene, View, toScreen, LightingOnly)
     {
         if (toScreen)
         {
@@ -66,6 +66,7 @@ class DeferredBasePass extends BasePass
                     this.gl.uniformMatrix4fv (scene.objects[i].material.uniforms.get("view").location, false, View.WorldToViewMatrix)
                     this.gl.uniform4fv       (scene.objects[i].material.uniforms.get("CameraPosition").location, View.CameraPosition)            
                     this.gl.uniform1i        (scene.objects[i].material.uniforms.get("ID").location, i)
+                    this.gl.uniform1i        (scene.objects[i].material.uniforms.get("LightingOnly").location, LightingOnly)
                     this.gl.uniform4fv       (scene.objects[i].material.uniforms.get("Material").location, [ ...scene.objects[i].material.albedo, scene.objects[i].material.alpha ])
                     this.gl.uniformMatrix4fv (scene.objects[i].material.uniforms.get("transform").location, false, scene.objects[i].transform.matrix)
                     this.gl.uniform3fv       (scene.objects[i].material.uniforms.get("scale").location, scene.objects[i].transform.scale)

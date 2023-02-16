@@ -67,7 +67,7 @@
             "Angel",
             new Primitive(gl, await MeshGeometry('models/AngelWood.obj')),
             new Transform(Scale(1.0, 1.0, 1.0), Translation(0.0, 0.0, -4.0), Rotation(0.0, -0.5, 0.0)),
-            DarkGreyMaterial,
+            BlackMaterial,
             false))
 
         scene.add(new SceneObject(
@@ -151,7 +151,7 @@
         {
             Computeview();
             UpdateScene();
-            renderEngine.render(view, scene, frameID, selectedObject)
+            renderEngine.render(view, scene, frameID, selectedObject, LightingOnly)
         }
 
         LastLoopEnded = Date.now();
@@ -183,6 +183,8 @@
     var ShiftPressed = false;
 
     var SpacePressed = false;
+
+    var LightingOnly = false;
 
     function PollInput() 
     {      
@@ -363,6 +365,11 @@
         if (event.key == ' ')
         {
             SpacePressed = true;
+        }
+
+        if (event.key == 'l')
+        {
+            LightingOnly = !LightingOnly
         }
     }
 

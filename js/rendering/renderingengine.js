@@ -111,7 +111,7 @@ class RenderingEngine
         this.FrameBuffersNoDepth.unshift(LastFrameBufferNoDepth)
     }
 
-    render(view, scene, frameID, SelectedObject)
+    render(view, scene, frameID, SelectedObject, LightingOnly)
     {
         this.setup(view)
 
@@ -119,7 +119,8 @@ class RenderingEngine
         this.BaseRenderPass.Render(
             scene,
             view,
-            false)
+            false,
+            LightingOnly)
         LastBuffer = this.BaseRenderPass.outputAlbedo;
 
         if (this.ShadowRenderPass.active())
@@ -232,7 +233,6 @@ class RenderingEngine
             LastBuffer = this.TAARenderPass.outputColour
         }
     
-        
         if (this.FogRenderPass.active())
         {
             this.FogRenderPass.Render(
@@ -249,8 +249,7 @@ class RenderingEngine
                 this.BloomRenderPass.active()?false:true)
             LastBuffer = this.FogRenderPass.output
         }
-        
-
+    
         if (this.DepthOfFieldRenderPass.active())
         {
             this.BlurRenderPass.Render(
